@@ -26,13 +26,15 @@ const Login = ({ navigation }) => {
     Alert.alert('Success', 'You are logged in!');
 
     // Navigate to the HomeScreen
-    navigation.navigate('Index'); // Make sure this matches the name in your stack navigator
+    navigation.navigate('OnBoardingOne'); // Make sure this matches the name in your stack navigator
   };
 
   return (
     <LinearGradient colors={['#2CA39A', 'white']} style={styles.container}>
       <View style={styles.loginContainer}>
-        <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Login</Text>
+      <Text style={styles.welcomeText}>Welcome Back!</Text>
+        
 
         <TextInput
           style={styles.input}
@@ -53,6 +55,7 @@ const Login = ({ navigation }) => {
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Login</Text>
+          
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
@@ -71,26 +74,37 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+
+    
   },
   title: {
-    fontSize: 24,
+
+    fontSize: 35,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 80,
+    textAlign: 'center',
+    color: '#fff',
+  },
+  welcomeText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 10,
     textAlign: 'center',
     color: '#fff',
   },
   input: {
+    borderRadius: 32,
     borderWidth: 1,
     borderColor: '#fff',
     padding: 10,
     marginBottom: 15,
-    borderRadius: 8,
     backgroundColor: '#fff',
   },
   button: {
+    marginTop: 200,
     backgroundColor: '#fff',
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 32,
     alignItems: 'center',
     marginBottom: 20,
   },
@@ -98,8 +112,9 @@ const styles = StyleSheet.create({
     color: '#2CA39A',
     fontSize: 18,
   },
+  
   linkText: {
-    color: '#fff',
+    color: 'black',
     textAlign: 'center',
     fontSize: 16,
   },

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; // Import Ionicons for icons
 import { LinearGradient } from 'expo-linear-gradient';  // Gradient library
+import BottomNavBar from './BottomNavBar'; // Adjust the path as necessary
 
 const HomePage = ({ navigation }) => {
   const userProfilePic = 'https://via.placeholder.com/150'; // Placeholder image for testing
@@ -28,7 +29,7 @@ const HomePage = ({ navigation }) => {
       {/* Header with App Name, Tagline, and Profile Picture */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.appName}>City Expo</Text>
+          <Text style={styles.appName}>City Xpo</Text>
           <Text style={{ fontSize: 32, fontWeight: 'bold', color: '#fff', textAlign: 'center', marginVertical: 20 }}>
   Explore Tshwane
 </Text>
@@ -92,18 +93,7 @@ const HomePage = ({ navigation }) => {
         ))}
       </ScrollView>
 
-      {/* Bottom Navigation Bar */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity onPress={() => console.log('Home pressed')}>
-          <Icon name="home-outline" size={30} color="#888" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => console.log('Map pressed')}>
-          <Icon name="map-outline" size={30} color="#888" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => console.log('Settings pressed')}>
-          <Icon name="settings-outline" size={30} color="#888" />
-        </TouchableOpacity>
-      </View>
+      <BottomNavBar navigation={navigation} />
     </LinearGradient>
   );
 };
@@ -164,7 +154,8 @@ const styles = StyleSheet.create({
   destinationCard: {
     marginRight: 15,
     alignItems: 'center',
-    paddingBottom: 100
+    paddingBottom: 100, 
+    marginBottom: 50
   },
   destinationImage: {
     width: 150,

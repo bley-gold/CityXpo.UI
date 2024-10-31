@@ -179,7 +179,7 @@ const Registration = ({ navigation }) => {
             <CheckBox checked={checked} onPress={() => setChecked(!checked)} containerStyle={styles.checkbox} />
             <Text style={styles.checkboxText}>I have read and agree to the</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Terms')}>
-              <Text style={styles.linkText}>POPI Act</Text>
+              <Text style={styles.linkText}> POPI Act</Text>
             </TouchableOpacity>
           </View>
           {errors.form && <Text style={styles.errorText}>{errors.form}</Text>}
@@ -253,14 +253,15 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     backgroundColor: 'transparent',
-    borderColor: 'transparent',
+    borderColor: '#ffffff',
   },
   checkboxText: {
-    color: '#ffffff',
+    fontWeight: 'bold',
+    color: 'black',
   },
   linkText: {
-    color: '#007AFF', // Blue color for links
-    textDecorationLine: 'underline',
+    color: 'white', // Blue color for links
+    textDecorationLine: 'none',
   },
   button: {
     backgroundColor: '#007AFF', // Button color
@@ -281,7 +282,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   loginText: {
-    color: '#ffffff',
+    color: 'black',
   },
   errorText: {
     color: 'red',

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; // Import Ionicons for icons
+import BottomNavBar from './BottomNavBar'; // Adjust the path as necessary
 
 const BookingPage = ({ navigation }) => {
   const [ticketCount, setTicketCount] = useState(1); // State to manage the number of tickets
@@ -59,18 +60,7 @@ const BookingPage = ({ navigation }) => {
         </TouchableOpacity>
       </ScrollView>
 
-      {/* Bottom Navigation Bar */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity onPress={() => console.log('Home pressed')}>
-          <Icon name="home-outline" size={30} color="#888" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => console.log('Map pressed')}>
-          <Icon name="map-outline" size={30} color="#888" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => console.log('Settings pressed')}>
-          <Icon name="settings-outline" size={30} color="#888" />
-        </TouchableOpacity>
-      </View>
+      <BottomNavBar navigation={navigation} />
     </View>
   );
 };
