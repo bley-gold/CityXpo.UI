@@ -1,19 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; // Import Ionicons for icons
 import { LinearGradient } from 'expo-linear-gradient';  // Gradient library
 import BottomNavBar from './BottomNavBar'; // Adjust the path as necessary
 
-const HomePage = ({ navigation }) => {
+const Index = ({ navigation }) => {
   const userProfilePic = 'https://via.placeholder.com/150'; // Placeholder image for testing
 
   // Placeholder destination images and names
   const destinations = [
-    { id: 1, name: 'Union Buildings', image: require('../assets/destination/union.jpg') },
-    { id: 2, name: 'Boltanical Gardens', image: require('../assets/destination/realbotanical.jpg') }, // Correctly using require for local image
-    { id: 3, name: 'Freedom Park', image: require('../assets/destination/freedomPark.jpg') },
-    { id: 4, name: 'Pretoria Art Museum', image: require('../assets/destination/artMuseum.jpg') },
+    { id: 1, name: 'Union Buildings', image: require('../assets/destination/union.jpg'), history: 'The Union Buildings are the seat of the South African government and the official residence of the President of South Africa.' },
+    { id: 2, name: 'Boltanical Gardens', image: require('../assets/destination/realbotanical.jpg'), history: 'The Pretoria Botanical Gardens showcase a variety of indigenous plants and serve as a serene retreat for visitors.' },
+    { id: 3, name: 'Freedom Park', image: require('../assets/destination/freedomPark.jpg'), history: 'Freedom Park is a memorial dedicated to those who fought for freedom and democracy in South Africa, commemorating the struggles faced by the nation.' },
+    { id: 4, name: 'Pretoria Art Museum', image: require('../assets/destination/artMuseum.jpg'), history: 'The Pretoria Art Museum features a collection of South African art and hosts various exhibitions throughout the year.' },
   ];
+
+  // State to hold selected destination
+  const [selectedDestination, setSelectedDestination] = useState(null);
 
   // Placeholder upcoming events data
   const upcomingEvents = [
@@ -31,11 +34,10 @@ const HomePage = ({ navigation }) => {
         <View>
           <Text style={styles.appName}>City Xpo</Text>
           <Text style={{ fontSize: 32, fontWeight: 'bold', color: '#fff', textAlign: 'center', marginVertical: 20 }}>
-  Explore Tshwane
-</Text>
-
+            Explore Tshwane
+          </Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate('UserProfile')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
           <Image
             source={{ uri: userProfilePic }} // Profile image URL
             style={styles.profilePic}
@@ -62,13 +64,23 @@ const HomePage = ({ navigation }) => {
           <TouchableOpacity
             key={destination.id}
             style={styles.destinationCard}
-            onPress={() => console.log(`Navigate to ${destination.name}`)} // Add navigation here
+            onPress={() => setSelectedDestination(destination.id === selectedDestination ? null : destination.id)}
           >
             <Image source={destination.image} style={styles.destinationImage} />
             <Text style={styles.destinationName}>{destination.name}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
+
+      {/* Destination History Section */}
+      {selectedDestination && (
+        <View style={styles.historyContainer}>
+          <Text style={styles.historyHeading}>History</Text>
+          <Text style={styles.historyText}>
+            {destinations.find(dest => dest.id === selectedDestination)?.history}
+          </Text>
+        </View>
+      )}
 
       {/* Upcoming Events Section */}
       <Text style={styles.heading}>Upcoming Events</Text>
@@ -113,10 +125,6 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  tagline: {
-    fontSize: 16,
-    color: '#888',
   },
   profilePic: {
     width: 50, // Increased size for visibility
@@ -167,6 +175,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
+  historyContainer: {
+    marginVertical: 20,
+    padding: 10,
+    backgroundColor: '#e0f7fa', // Light background for history
+    borderRadius: 10,
+  },
+  historyHeading: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  historyText: {
+    fontSize: 14,
+    color: '#333',
+  },
   eventList: {
     marginBottom: 80, // Keep space for the bottom nav bar
   },
@@ -194,28 +217,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   eventDescriptionContainer: {
-    marginLeft: 15,
-    flex: 1, // Allows description to take remaining space
+    marginLeft: 10,
   },
   eventDescription: {
-    fontSize: 14,
-    color: '#333',
-  },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around', // Evenly space icons
-    alignItems: 'center',
-    height: 60,
-    borderRadius: 20,
-    backgroundColor: '#f9f9f9',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    paddingHorizontal: 20, // Padding inside the nav bar
-    position: 'absolute', // Position it at the bottom
-    bottom: 0,
-    left: 0,
-    right: 0,
+    fontSize: 16,
   },
 });
 
-export default HomePage;
+export default Index;

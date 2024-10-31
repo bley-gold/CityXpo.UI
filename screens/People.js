@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Image, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const People = () => {
   const [image, setImage] = useState(''); // State to manage the image URI
@@ -10,16 +10,20 @@ const People = () => {
 
   // Function to handle opening the image picker
   const handleImagePicker = async () => {
-    const result = await launchImageLibrary({ mediaType: 'photo' }, (response) => {
-      if (response.didCancel) {
+    try {
+      const result = await launchImageLibrary({ mediaType: 'photo' });
+
+      if (result.didCancel) {
         console.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        console.log('ImagePicker Error: ', response.errorMessage);
+      } else if (result.errorCode) {
+        console.log('ImagePicker Error: ', result.errorMessage);
       } else {
-        const source = response.assets[0].uri; // Get the image URI from the response
+        const source = result.assets[0].uri; // Get the image URI from the response
         setImage(source); // Set the selected image URI
       }
-    });
+    } catch (error) {
+      console.log('Error picking image: ', error);
+    }
   };
 
   // Function to handle posting the image and caption

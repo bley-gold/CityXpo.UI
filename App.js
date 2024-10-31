@@ -9,7 +9,7 @@ import Index from './screens/Index';
 import BookingPage from './screens/BookingPage';
 import Checkout from './screens/Checkout';
 import People from './screens/People';
-
+import Profile from './screens/Profile';
 import SplashScreen from './screens/SplashScreen';
 import OnBoardingOne from './screens/OnBoardingOne';
 import OnBoardingTwo from './screens/OnBoardingTwo';
@@ -26,7 +26,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Registration">
+      <Stack.Navigator initialRouteName="SplashScreen">
       <Stack.Screen name="ScavengerHuntScreen" component={ScavengerHuntScreen} options={{ headerShown: false }} />
       <Stack.Screen name="ScavengerHuntCongratulations" component={ScavengerHuntCongratulations} options={{ headerShown: false }} />
       <Stack.Screen name="WelcomePage" component={WelcomePage} options={{ headerShown: false }} />
@@ -36,6 +36,7 @@ export default function App() {
       <Stack.Screen name="OnBoardingTwo" component={OnBoardingTwo} options={{ headerShown: false }} />  
       <Stack.Screen name="OnBoardingThree" component={OnBoardingThree} options={{ headerShown: false }} />    
       <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }}/>
         <Stack.Screen name="BookingPage" component={BookingPage} options={{ headerShown: false }} />
       <Stack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
        <Stack.Screen name="Index" component={Index} options={{ headerShown: false }} />
