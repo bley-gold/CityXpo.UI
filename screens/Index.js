@@ -11,13 +11,13 @@ const HomePage = ({ navigation }) => {
   const destinations = [
     { id: 1, name: 'Union Buildings', image: require('../assets/destination/union.jpg') },
     { id: 2, name: 'Boltanical Gardens', image: require('../assets/destination/realbotanical.jpg') }, // Correctly using require for local image
-    { id: 3, name: 'Destination 3', image: require('../assets/destination/realbotanical.jpg') },
-    { id: 4, name: 'Destination 4', image: require('../assets/destination/realbotanical.jpg') },
+    { id: 3, name: 'Freedom Park', image: require('../assets/destination/freedomPark.jpg') },
+    { id: 4, name: 'Pretoria Art Museum', image: require('../assets/destination/artMuseum.jpg') },
   ];
 
   // Placeholder upcoming events data
   const upcomingEvents = [
-    { id: 1, date: '2024-11-01', description: 'Annual Arts Festival at City Park', price: 50, image: require('../assets/destination/realbotanical.jpg') },
+    { id: 1, date: '2024-11-02', description: 'Tshwane Gospel Choir Harmony of Prayers live recording', price: 150, image: require('../assets/destination/tshwaneGospelChoir.jpg') },
     { id: 2, date: '2024-11-05', description: 'Food and Wine Expo at the Convention Center', price: 30, image: require('../assets/destination/realbotanical.jpg') },
     { id: 3, date: '2024-11-10', description: 'Live Music Concert at Downtown Square', price: 20, image: require('../assets/destination/realbotanical.jpg') },
     { id: 4, date: '2024-11-15', description: 'Tech Conference at the Expo Center', price: 100, image: require('../assets/destination/realbotanical.jpg') },

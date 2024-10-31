@@ -79,8 +79,10 @@ const Registration = ({ navigation }) => {
           phoneNumber,
         };
 
-        const response = await axios.post(API_URL, customerData);
+        // const response = await axios.post(API_URL, customerData);
         Alert.alert('Success', 'Registration completed successfully!');
+        navigation.navigate('Verification');
+        
       } catch (error) {
         const errorMessage = error.response?.data?.message || error.message || 'There was an issue with the registration.';
         Alert.alert('Error', errorMessage);
@@ -292,3 +294,4 @@ const styles = StyleSheet.create({
 });
 
 export default Registration;
+
