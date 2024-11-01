@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, Alert } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';  // Gradient library
+import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';  
+import axios from 'axios'; 
+import { BASE_URL } from '../API/API';
+import Toast from 'react-native-toast-message'; // Import Toast
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -11,30 +14,62 @@ const Login = ({ navigation }) => {
     return emailRegex.test(email);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (email === '' || password === '') {
-      Alert.alert('Error', 'Please fill in all fields');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please fill in all fields',
+      });
       return;
     }
 
     if (!validateEmail(email)) {
-      Alert.alert('Error', 'Please enter a valid email address');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please enter a valid email address',
+      });
       return;
     }
 
-    // Simulate successful login for now
-    Alert.alert('Success', 'You are logged in!');
+    try {
+      const response = await axios.post(`${BASE_URL}/customers/login`, {
+        email,
+        password,
+      });
 
-    // Navigate to the HomeScreen
-    navigation.navigate('OnBoardingOne'); // Make sure this matches the name in your stack navigator
+      if (response.status === 200) {
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'You are logged in!',
+        });
+        
+        // Navigate to the HomeScreen
+        navigation.navigate('OnBoardingOne'); // Adjust the navigation target as necessary
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Login failed. Please check your credentials.',
+        });
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'An error occurred during login.';
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: errorMessage,
+      });
+    }
   };
 
   return (
     <LinearGradient colors={['#2CA39A', 'white']} style={styles.container}>
       <View style={styles.loginContainer}>
-      <Text style={styles.title}>Login</Text>
-      <Text style={styles.welcomeText}>Welcome Back!</Text>
-        
+        <Text style={styles.title}>Login</Text>
+        <Text style={styles.welcomeText}>Welcome Back!</Text>
 
         <TextInput
           style={styles.input}
@@ -55,13 +90,14 @@ const Login = ({ navigation }) => {
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Login</Text>
-          
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
           <Text style={styles.linkText}>Don't have an account? Register</Text>
         </TouchableOpacity>
+        
       </View>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </LinearGradient>
   );
 };
@@ -74,11 +110,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-
-    
   },
   title: {
-
     fontSize: 35,
     fontWeight: 'bold',
     marginBottom: 80,
@@ -112,9 +145,8 @@ const styles = StyleSheet.create({
     color: '#2CA39A',
     fontSize: 18,
   },
-  
   linkText: {
-    color: 'black',
+    color: '#2CA39A',
     textAlign: 'center',
     fontSize: 16,
   },

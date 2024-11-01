@@ -1,31 +1,31 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import axios from 'axios';
-import { LinearGradient } from 'expo-linear-gradient'; // Assuming you are using Expo
-
-const API_URL = 'http://192.168.18.2:5000/api/customers';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BASE_URL } from '../API/API';
+import Toast from 'react-native-toast-message';
 
 const Registration = ({ navigation }) => {
   const [checked, setChecked] = useState(false);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState(''); // Changed from pin to password
-  const [confirmPassword, setConfirmPassword] = useState(''); // Changed from confirmPin to confirmPassword
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [FirstName, setFirstName] = useState('');
+  const [LastName, setLastName] = useState('');
+  const [Email, setEmail] = useState('');
+  const [Password, setPassword] = useState('');
+  const [ConfirmPassword, setConfirmPassword] = useState('');
+  const [PhoneNumber, setPhoneNumber] = useState('');
   const [errors, setErrors] = useState({});
 
   const handleFirstNameChange = (text) => setFirstName(text.replace(/[^a-zA-Z\s]/g, ''));
   const handleLastNameChange = (text) => setLastName(text.replace(/[^a-zA-Z\s]/g, ''));
-  const handlePasswordChange = (text) => setPassword(text); // Password can be any character
-  const handleConfirmPasswordChange = (text) => setConfirmPassword(text); // Confirm password can be any character
+  const handlePasswordChange = (text) => setPassword(text);
+  const handleConfirmPasswordChange = (text) => setConfirmPassword(text);
   const handlePhoneChange = (text) => setPhoneNumber(text.replace(/[^0-9]/g, '').slice(0, 10));
   const handleEmailChange = (text) => setEmail(text.trim());
 
   const validateEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(Email)) {
       return 'Please enter a valid email address.';
     }
     return '';
@@ -33,25 +33,25 @@ const Registration = ({ navigation }) => {
 
   const validatePasswords = () => {
     let passwordErrors = {};
-    if (password.length < 6) passwordErrors.password = 'Password must be at least 6 characters.';
-    if (password !== confirmPassword) passwordErrors.confirmPassword = 'Passwords do not match.';
+    if (Password.length < 6) passwordErrors.Password = 'Password must be at least 6 characters.';
+    if (Password !== ConfirmPassword) passwordErrors.ConfirmPassword = 'Passwords do not match.';
     return passwordErrors;
   };
 
   const validatePhoneNumber = () => {
-    if (phoneNumber.length !== 10) return 'Phone number must be exactly 10 digits.';
+    if (PhoneNumber.length !== 10) return 'Phone number must be exactly 10 digits.';
     return '';
   };
 
   const isFormValid = () => {
     return (
       checked &&
-      firstName.trim() !== '' &&
-      lastName.trim() !== '' &&
-      email.trim() !== '' &&
-      password.trim() !== '' &&
-      confirmPassword.trim() !== '' &&
-      phoneNumber.trim() !== ''
+      FirstName.trim() !== '' &&
+      LastName.trim() !== '' &&
+      Email.trim() !== '' &&
+      Password.trim() !== '' &&
+      ConfirmPassword.trim() !== '' &&
+      PhoneNumber.trim() !== ''
     );
   };
 
@@ -62,30 +62,55 @@ const Registration = ({ navigation }) => {
 
     if (!isFormValid()) {
       setErrors({ form: 'Please fill out all fields correctly.' });
-      Alert.alert('Error', 'Please fill out all fields correctly.');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please fill out all fields correctly.',
+      });
     } else if (emailError) {
-      Alert.alert('Error', emailError);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: emailError,
+      });
     } else if (phoneError) {
-      Alert.alert('Error', phoneError);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: phoneError,
+      });
     } else if (Object.keys(passwordErrors).length > 0) {
-      Alert.alert('Error', passwordErrors.password || passwordErrors.confirmPassword);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: passwordErrors.Password || passwordErrors.ConfirmPassword,
+      });
     } else {
       try {
         const customerData = {
-          firstName,
-          lastName,
-          email,
-          password, // Changed from loginPin to password
-          phoneNumber,
+          FirstName,
+          LastName,
+          Email,
+          Password,
+          PhoneNumber,
         };
 
-        // const response = await axios.post(API_URL, customerData);
-        Alert.alert('Success', 'Registration completed successfully!');
-        navigation.navigate('Verification');
+        const response = await axios.post(`${BASE_URL}/customers`, customerData);
+        
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: response.data.message || 'Registration completed successfully!',
+        });
+        navigation.navigate('Verification', {Email});
         
       } catch (error) {
         const errorMessage = error.response?.data?.message || error.message || 'There was an issue with the registration.';
-        Alert.alert('Error', errorMessage);
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: errorMessage,
+        });
       }
     }
   };
@@ -95,7 +120,6 @@ const Registration = ({ navigation }) => {
       <LinearGradient colors={['#2CA39A', '#ffffff']} style={styles.gradientContainer}>
         <View style={styles.formContainer}>
           <Text style={styles.headerText}>Sign Up</Text>
-          
           <Text style={styles.subHeaderText}>Create your account!</Text>
 
           <View style={styles.inputWrapper}>
@@ -103,79 +127,79 @@ const Registration = ({ navigation }) => {
             <TextInput
               style={styles.input}
               placeholder="First Name"
-              value={firstName}
+              value={FirstName}
               onChangeText={handleFirstNameChange}
               placeholderTextColor="#707070"
               autoCapitalize="words"
             />
           </View>
-          {errors.firstName && <Text style={styles.errorText}>{errors.firstName}</Text>}
+          {errors.FirstName && <Text style={styles.errorText}>{errors.FirstName}</Text>}
 
           <View style={styles.inputWrapper}>
             <Image style={styles.icon} />
             <TextInput
               style={styles.input}
               placeholder="Last Name"
-              value={lastName}
+              value={LastName}
               onChangeText={handleLastNameChange}
               placeholderTextColor="#707070"
               autoCapitalize="words"
             />
           </View>
-          {errors.lastName && <Text style={styles.errorText}>{errors.lastName}</Text>}
+          {errors.LastName && <Text style={styles.errorText}>{errors.LastName}</Text>}
 
           <View style={styles.inputWrapper}>
             <Image style={styles.icon} />
             <TextInput
               style={styles.input}
               placeholder="Email"
-              value={email}
+              value={Email}
               onChangeText={handleEmailChange}
               keyboardType="email-address"
               placeholderTextColor="#707070"
             />
           </View>
-          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+          {errors.Email && <Text style={styles.errorText}>{errors.Email}</Text>}
 
           <View style={styles.inputWrapper}>
             <Image style={styles.icon} />
             <TextInput
               style={styles.input}
               placeholder="Phone Number"
-              value={phoneNumber}
+              value={PhoneNumber}
               onChangeText={handlePhoneChange}
               keyboardType="numeric"
               maxLength={10}
               placeholderTextColor="#707070"
             />
           </View>
-          {errors.phoneNumber && <Text style={styles.errorText}>{errors.phoneNumber}</Text>}
+          {errors.PhoneNumber && <Text style={styles.errorText}>{errors.PhoneNumber}</Text>}
 
           <View style={styles.inputWrapper}>
             <Image style={styles.icon} />
             <TextInput
               style={styles.input}
               placeholder="Please create your password"
-              value={password}
+              value={Password}
               onChangeText={handlePasswordChange}
               secureTextEntry
               placeholderTextColor="#707070"
             />
           </View>
-          {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+          {errors.Password && <Text style={styles.errorText}>{errors.Password}</Text>}
 
           <View style={styles.inputWrapper}>
             <Image style={styles.icon} />
             <TextInput
               style={styles.input}
               placeholder="Confirm your password"
-              value={confirmPassword}
+              value={ConfirmPassword}
               onChangeText={handleConfirmPasswordChange}
               secureTextEntry
               placeholderTextColor="#707070"
             />
           </View>
-          {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
+          {errors.ConfirmPassword && <Text style={styles.errorText}>{errors.ConfirmPassword}</Text>}
 
           <View style={styles.checkboxContainer}>
             <CheckBox checked={checked} onPress={() => setChecked(!checked)} containerStyle={styles.checkbox} />
@@ -197,14 +221,16 @@ const Registration = ({ navigation }) => {
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.linkText}>Login</Text>
+              <Text style={styles.linkText}> Log In</Text>
             </TouchableOpacity>
           </View>
         </View>
       </LinearGradient>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </ScrollView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -256,42 +282,49 @@ const styles = StyleSheet.create({
   checkbox: {
     backgroundColor: 'transparent',
     borderColor: '#ffffff',
+    marginRight: 5,
   },
   checkboxText: {
-    fontWeight: 'bold',
-    color: 'black',
+    color: '#black',
   },
   linkText: {
-    color: 'white', // Blue color for links
-    textDecorationLine: 'none',
+    color: '#2CA39A',
+    fontWeight: 'bold',
   },
   button: {
-    backgroundColor: '#007AFF', // Button color
-    borderRadius: 20,
+    backgroundColor: '#2CA39A',
+    borderRadius: 32,
     paddingVertical: 10,
+    marginBottom: 20,
     alignItems: 'center',
   },
   disabledButton: {
-    backgroundColor: '#A5A5A5', // Disabled button color
+    backgroundColor: '#b2e0de', // Light green for disabled button
   },
   buttonText: {
-    color: '#ffffff', // Button text color
+    color: '#ffffff',
     fontSize: 16,
+    fontWeight: '700',
   },
   loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 10,
   },
   loginText: {
-    color: 'black',
+    color: '#black',
+    marginRight: 5,
   },
   errorText: {
     color: 'red',
     marginBottom: 10,
     textAlign: 'center',
   },
+  icon: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
+  },
 });
 
 export default Registration;
-

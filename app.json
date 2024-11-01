@@ -1,5 +1,14 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsVersion": "11.0.0"
+        }
+      ],
+      "expo-font"
+    ],
     "name": "CityExpo",
     "slug": "CityExpo",
     "version": "1.0.0",
@@ -14,13 +23,11 @@
     },
     "android": {
       "adaptiveIcon": {
-
         "backgroundColor": "#ffffff"
       },
       "package": "com.matsiemtri.Click_Block_Tech_UI"
     },
-    "web": {
-    },
+    "web": {},
     "extra": {
       "eas": {
         "projectId": "17bf094d-8bd4-4a64-a2b5-0d238a52e85f"

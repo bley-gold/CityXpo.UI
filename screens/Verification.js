@@ -1,106 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Image, Button, Platform } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect, useRef } from 'react'; 
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native'; 
+import { LinearGradient } from 'expo-linear-gradient'; 
+import { BASE_URL } from '../API/API'; 
+import axios from 'axios'; 
 
-const Profile = () => {
-  const [firstName, setFirstName] = useState('John');
-  const [lastName, setLastName] = useState('Doe');
-  const [phoneNumber, setPhoneNumber] = useState('0786940018');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [streakPoints, setStreakPoints] = useState(0);
-  const [referralPoints, setReferralPoints] = useState(0);
-  const uniqueIdentifier = 'USER123456';
+const EmailVerification = ({ navigation, route }) => {
+  const { email } = route.params; // Retrieve email from route params
+  const [code, setCode] = useState(['', '', '', '', '', '']); 
+  const [countdown, setCountdown] = useState(600); 
+  const inputRefs = useRef([]); // Array to hold refs for each input
 
-  const navigation = useNavigation();
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (countdown > 0) {
+        setCountdown((prev) => prev - 1);
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [countdown]);
 
-  const handleLogoClick = () => {
-    navigation.navigate('Home'); // Navigate to home screen
-  };
+  const handleInputChange = (index, value) => {
+    if (value.match(/^[0-9]{0,1}$/)) {
+      const newCode = [...code];
+      newCode[index] = value;
+      setCode(newCode);
 
-  const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      const formattedDate = selectedDate.toISOString().split('T')[0];
-      setDateOfBirth(formattedDate);
-      Alert.alert('Date of Birth Set', `Your date of birth is set to ${formattedDate}.`);
-      checkBirthday(formattedDate);
+      if (value && index < 5) {
+        inputRefs.current[index + 1]?.focus();
+      }
     }
   };
 
-  const checkBirthday = (dob) => {
-    const today = new Date();
-    const [year, month, day] = dob.split('-').map(Number);
-
-    if (today.getMonth() + 1 === month && today.getDate() === day) {
-      setStreakPoints((prevPoints) => prevPoints + 50);
-      Alert.alert('Happy Birthday!', "You've earned 50 bonus points!");
+  const handleVerify = async () => {
+    const codeString = code.join('');
+    try {
+      const response = await axios.post(`${BASE_URL}/customers/verify-otp`, { otp: codeString, email });
+      if (response.status === 200) { // Check if the registration was successful
+        Alert.alert('Success', 'Registration completed successfully!', [
+          { text: 'OK', onPress: () => navigation.navigate('Login') } // Navigate to Login screen
+        ]);
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'There was an issue with the registration.';
+      Alert.alert('Error', errorMessage);
     }
   };
 
-  useEffect(() => {
-    const participateInScavengerHunt = () => {
-      const points = 10;
-      setStreakPoints((prevPoints) => prevPoints + points);
-      Alert.alert('Scavenger Hunt Participation', `You've earned ${points} streak points!`);
-    };
-
-    participateInScavengerHunt();
-  }, []);
-
-  useEffect(() => {
-    const friendUsesReferralCode = () => {
-      const points = 5;
-      setReferralPoints((prevPoints) => prevPoints + points);
-      Alert.alert('Referral Success', `You've earned ${points} referral points!`);
-    };
-
-    friendUsesReferralCode();
-  }, []);
-
-  useEffect(() => {
-    if (dateOfBirth) {
-      checkBirthday(dateOfBirth);
+  const handleResend = async () => {
+    try {
+      await axios.post(`${BASE_URL}/customers/resend-otp`, { email });
+      Alert.alert('Verification Code Resent', 'A new code has been sent to your email.');
+      
+      setCountdown(600); // Reset countdown
+    } catch (error) {
+      Alert.alert('Error', 'An error occurred while resending the code.');
+      console.error(error);
     }
-  }, [dateOfBirth]);
+  };
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+  };
 
   return (
     <LinearGradient colors={['#2CA39A', '#ffffff']} style={styles.gradientContainer}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={handleLogoClick}>
-          <Image
-            source={require('../assets/logo/logo.png')} // Update path to your local logo image
-            style={styles.logo}
-          />
-        </TouchableOpacity>
-        <Text style={styles.title}>Profile</Text>
-        <Text style={styles.info}>Unique Identifier: {uniqueIdentifier}</Text>
-        <Text style={styles.info}>Name: {firstName}</Text>
-        <Text style={styles.info}>Surname: {lastName}</Text>
-        <Text style={styles.info}>Phone Number: {phoneNumber}</Text>
-        {dateOfBirth ? (
-          <Text style={styles.info}>Date of Birth: {dateOfBirth}</Text>
-        ) : (
-          <>
-            <Button title="Set Date of Birth" onPress={() => setShowDatePicker(true)} />
-            {showDatePicker && (
-              <DateTimePicker
-                value={new Date()}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
-                onChange={handleDateChange}
-                maximumDate={new Date()}
-              />
-            )}
-          </>
-        )}
-        
-        <View style={styles.pointsContainer}>
-          <Text style={styles.pointsText}>Streak Points: {streakPoints}</Text>
-          <Text style={styles.pointsText}>Referral Points: {referralPoints}</Text>
+        <Text style={styles.headerText}>Check Your Email</Text>
+        <Text style={styles.subHeaderText}>We've sent the verification code to {email}</Text>
+
+        <View style={styles.codeContainer}>
+          {code.map((digit, index) => (
+            <TextInput
+              key={index}
+              style={styles.input}
+              value={digit}
+              keyboardType="numeric"
+              maxLength={1}
+              onChangeText={(value) => handleInputChange(index, value)}
+              ref={(input) => (inputRefs.current[index] = input)}
+            />
+          ))}
         </View>
+
+        <Text style={styles.timerText}>Code expires in {formatTime(countdown)}</Text>
+
+        <TouchableOpacity style={styles.button} onPress={handleVerify}>
+          <Text style={styles.buttonText}>Verify</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.resendButton} onPress={handleResend}>
+          <Text style={styles.resendButtonText}>Resend Code</Text>
+        </TouchableOpacity>
       </View>
     </LinearGradient>
   );
@@ -111,38 +103,70 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   container: {
-    width: '90%',
+    width: '100%',
     alignItems: 'center',
-    padding: 20,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
-  title: {
+  headerText: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#2CA39A',
     marginBottom: 10,
   },
-  info: {
+  subHeaderText: {
     fontSize: 16,
-    color: '#2CA39A',
-    marginBottom: 5,
+    color: '#707070',
+    marginBottom: 30,
   },
-  pointsContainer: {
-    marginVertical: 20,
+  codeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginBottom: 20,
+  },
+  input: {
+    width: 50,
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#2CA39A',
+    borderRadius: 8,
+    textAlign: 'center',
+    fontSize: 24,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  timerText: {
+    fontSize: 16,
+    color: '#707070',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
     alignItems: 'center',
+    marginBottom: 20,
   },
-  pointsText: {
-    fontSize: 16,
+  buttonText: {
+    fontWeight: 'bold',
     color: '#2CA39A',
+    fontSize: 16,
+  },
+  resendButton: {
+    marginTop: 10,
+  },
+  resendButtonText: {
+    fontWeight: 'bold',
+    color: '#2CA39A',
+    fontSize: 16,
   },
 });
 
-export default Profile;
+export default EmailVerification;

@@ -35,20 +35,23 @@ export default function OnboardingOne({ navigation }) {
                 resizeMode="cover"
                 imageStyle={styles.imageStyle}
             >
+                {/* Overlay for dimming effect */}
+                <View style={styles.overlay} />
+
                 <View style={styles.header}>
-                    <Text style={styles.title}>Welcome!</Text>
+                    <Text style={styles.title}>Thobela!</Text>
                     <Text style={styles.description}>
-                        To City Expo where X marks the spot
+                        Find out about our tourist attractions and phenomenal icons
                     </Text>
                 </View>
 
+                {/* Get Started Button */}
                 <TouchableOpacity style={styles.getStartedButton} onPress={() => navigation.navigate('Index')}>
                     <Text style={styles.getStartedButtonText}>Get Started</Text>
-
                 </TouchableOpacity>
 
                 <View style={styles.header}>
-                    <Text style={styles.didYouKnowText}>Did you know</Text>
+                    <Text style={styles.didYouKnowText1}>Did you know</Text>
                 </View>
 
                 <Animated.View
@@ -66,7 +69,9 @@ export default function OnboardingOne({ navigation }) {
                 </Animated.View>
 
                 <View style={styles.didYouKnowBox}>
-                    <Text style={styles.didYouKnowText}>Did you know? You can explore and discover amazing places with us!</Text>
+                    <Text style={styles.didYouKnowText}>
+                        Tshwane is the Administrative capital of South Africa and is home to the Union Buildings with government-related business playing an important role in the local economy.
+                    </Text>
                 </View>
             </ImageBackground>
         </TouchableOpacity>
@@ -83,10 +88,16 @@ const styles = StyleSheet.create({
     imageStyle: {
         opacity: 0.7,
     },
+    overlay: {
+        ...StyleSheet.absoluteFillObject,  // This will cover the entire ImageBackground
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Adjust the rgba value for different dimming effects
+        zIndex: 1, // Ensure it is above the image but below other content
+    },
     header: {
         marginTop: 120, // Position closer to the top
         paddingHorizontal: 20,
         alignItems: 'center',
+        zIndex: 2, // Ensure header is above overlay
     },
     title: {
         fontSize: 50,
@@ -115,6 +126,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 40,
         alignSelf: 'center',
         marginTop: 130,
+        zIndex: 3, // Set zIndex higher than overlay and header
     },
     getStartedButtonText: {
         fontSize: 18,
@@ -131,14 +143,20 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(245,245,245)',
         borderTopLeftRadius: 150,
         borderTopRightRadius: 150,
-        paddingVertical: 20,
+        padding: 20,
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 2,
     },
     didYouKnowText: {
-        fontSize: 14,
-        color: '#333',
+        fontSize: 18,
+        color: 'black',
+    },
+    didYouKnowText1: {
+        position: 'absolute',
+        bottom: -20,
+        fontSize: 30,
+        color: 'white',
         textAlign: 'center',
     },
     characterContainer: {

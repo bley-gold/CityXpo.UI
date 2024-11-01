@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     scavengerHuntText: {
+        fontFamily: 'Roboto',
         fontSize: 40,
         fontWeight: 'bold',
         color: 'white',

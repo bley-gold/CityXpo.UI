@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';  // Gradient library
 import BottomNavBar from './BottomNavBar'; // Adjust the path as necessary
 
 const Index = ({ navigation }) => {
-  const userProfilePic = 'https://via.placeholder.com/150'; // Placeholder image for testing
+  const userProfilePic = '../assets/logo/logo2.png'; // Placeholder image for testing
 
   // Placeholder destination images and names
   const destinations = [
@@ -20,11 +20,11 @@ const Index = ({ navigation }) => {
 
   // Placeholder upcoming events data
   const upcomingEvents = [
-    { id: 1, date: '2024-11-02', description: 'Tshwane Gospel Choir Harmony of Prayers live recording', price: 150, image: require('../assets/destination/tshwaneGospelChoir.jpg') },
-    { id: 2, date: '2024-11-05', description: 'Food and Wine Expo at the Convention Center', price: 30, image: require('../assets/destination/realbotanical.jpg') },
-    { id: 3, date: '2024-11-10', description: 'Live Music Concert at Downtown Square', price: 20, image: require('../assets/destination/realbotanical.jpg') },
-    { id: 4, date: '2024-11-15', description: 'Tech Conference at the Expo Center', price: 100, image: require('../assets/destination/realbotanical.jpg') },
-    { id: 5, date: '2024-11-20', description: 'Charity Run for Health Awareness', price: 15, image: { uri: 'https://via.placeholder.com/150' }},
+    { id: 1, date: '11/02', description: 'Tshwane Gospel Choir Harmony of Prayers live recording', price: 150, image: require('../assets/destination/tshwaneGospelChoir.jpg') },
+    { id: 2, date: '11/02', description: 'Food and Wine Expo at the Convention Center', price: 30, image: require('../assets/destination/realbotanical.jpg') },
+    { id: 3, date: '11/07', description: 'Live Music Concert at Downtown Square', price: 20, image: require('../assets/destination/realbotanical.jpg') },
+    { id: 4, date: '12/25', description: 'Tech Conference at the Expo Center', price: 100, image: require('../assets/destination/realbotanical.jpg') },
+    
   ];
 
   return (
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   eventDate: {
     position: 'absolute',
     top: 60, // Adjust position to be half on and half off the image
-    left: 40,
+    left: 70,
     color: '#fff',
     backgroundColor: 'rgba(0, 0, 0, 0.7)', // Semi-transparent background
     padding: 5,

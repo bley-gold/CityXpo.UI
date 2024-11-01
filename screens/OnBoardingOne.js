@@ -11,12 +11,10 @@ export default function OnboardingOne({ navigation }) {
         const tapX = event.nativeEvent.locationX;
 
         if (tapX < screenWidth / 2) {
-            // If tapped on the left side, go to the previous screen
             const prevIndex = activeIndex > 0 ? activeIndex - 1 : screens.length - 1;
             setActiveIndex(prevIndex);
             navigation.navigate(screens[prevIndex]);
         } else {
-            // If tapped on the right side, go to the next screen
             const nextIndex = (activeIndex + 1) % screens.length;
             setActiveIndex(nextIndex);
             navigation.navigate(screens[nextIndex]);
@@ -31,6 +29,9 @@ export default function OnboardingOne({ navigation }) {
                 resizeMode="cover"
                 imageStyle={styles.imageStyle}
             >
+                {/* Dim effect layer */}
+                <View style={styles.dimLayer} />
+
                 <View style={styles.content}>
                     <Text style={styles.title}>Welcome!</Text>
                     <Text style={styles.description}>
@@ -57,7 +58,7 @@ export default function OnboardingOne({ navigation }) {
                         ))}
                     </View>
 
-                    <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('LoginOrSignup')}>
+                    <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('Index')}>
                         <Text style={styles.skipButtonText}>Skip</Text>
                     </TouchableOpacity>
                 </View>
@@ -74,7 +75,15 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     imageStyle: {
-        opacity: 0.7,
+        opacity: 1, // Set this to 1 so that the image doesn't dim
+    },
+    dimLayer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust the alpha value for dimming effect
     },
     content: {
         flex: 1,

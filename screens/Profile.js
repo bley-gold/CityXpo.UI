@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Image, Button, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Button, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
+import Toast from 'react-native-toast-message'; // Import Toast
 
 const Profile = () => {
   const [firstName, setFirstName] = useState('John');
@@ -16,7 +17,7 @@ const Profile = () => {
   const navigation = useNavigation();
 
   const handleLogoClick = () => {
-    navigation.navigate('Home'); // Navigate to home screen
+    navigation.navigate('Index'); // Navigate to home screen
   };
 
   const handleDateChange = (event, selectedDate) => {
@@ -24,7 +25,12 @@ const Profile = () => {
     if (selectedDate) {
       const formattedDate = selectedDate.toISOString().split('T')[0];
       setDateOfBirth(formattedDate);
-      Alert.alert('Date of Birth Set', `Your date of birth is set to ${formattedDate}.`);
+      // Use Toast instead of Alert
+      Toast.show({
+        type: 'success',
+        text1: 'Date of Birth Set',
+        text2: `Your date of birth is set to ${formattedDate}.`,
+      });
       checkBirthday(formattedDate);
     }
   };
@@ -35,7 +41,11 @@ const Profile = () => {
 
     if (today.getMonth() + 1 === month && today.getDate() === day) {
       setStreakPoints((prevPoints) => prevPoints + 50);
-      Alert.alert('Happy Birthday!', "You've earned 50 bonus points!");
+      Toast.show({
+        type: 'info',
+        text1: 'Happy Birthday!',
+        text2: "You've earned 50 bonus points!",
+      });
     }
   };
 
@@ -43,7 +53,11 @@ const Profile = () => {
     const participateInScavengerHunt = () => {
       const points = 10;
       setStreakPoints((prevPoints) => prevPoints + points);
-      Alert.alert('Scavenger Hunt Participation', `You've earned ${points} streak points!`);
+      Toast.show({
+        type: 'success',
+        text1: 'Scavenger Hunt Participation',
+        text2: `You've earned ${points} streak points!`,
+      });
     };
 
     participateInScavengerHunt();
@@ -53,7 +67,11 @@ const Profile = () => {
     const friendUsesReferralCode = () => {
       const points = 5;
       setReferralPoints((prevPoints) => prevPoints + points);
-      Alert.alert('Referral Success', `You've earned ${points} referral points!`);
+      Toast.show({
+        type: 'success',
+        text1: 'Referral Success',
+        text2: `You've earned ${points} referral points!`,
+      });
     };
 
     friendUsesReferralCode();
@@ -69,14 +87,20 @@ const Profile = () => {
     <View style={styles.container}>
       <TouchableOpacity onPress={handleLogoClick}>
         <Image
-          source={require('../assets/logo/logo.png')} // Update path to your local logo image
+          source={require('../assets/icon/back.jpg')} // Update path to your local logo image
           style={styles.logo}
         />
       </TouchableOpacity>
-      <Text style={styles.title}>Profile</Text>
+      
+      <View style={styles.profileHeader}>
+        <Image
+          source={require('../assets/logo/logo2.png')} // Replace with the actual profile image path
+          style={styles.profileImage}
+        />
+        <Text style={styles.name}>{`${firstName} ${lastName}`}</Text>
+      </View>
+
       <Text style={styles.info}>Unique Identifier: {uniqueIdentifier}</Text>
-      <Text style={styles.info}>Name: {firstName}</Text>
-      <Text style={styles.info}>Surname: {lastName}</Text>
       <Text style={styles.info}>Phone Number: {phoneNumber}</Text>
       {dateOfBirth ? (
         <Text style={styles.info}>Date of Birth: {dateOfBirth}</Text>
@@ -94,19 +118,23 @@ const Profile = () => {
           )}
         </>
       )}
-      
+
       <View style={styles.pointsContainer}>
-        <Text style={styles.pointsText}>Streak Points: {streakPoints}</Text>
-        <Text style={styles.pointsText}>Referral Points: {referralPoints}</Text>
+        <Text style={styles.pointsText}>Streak Points: <Text style={styles.pointsValue}>{streakPoints}</Text></Text>
+        <Text style={styles.pointsText}>Referral Points: <Text style={styles.pointsValue}>{referralPoints}</Text></Text>
       </View>
+
+      {/* Add Toast at the bottom */}
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </View>
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 20,
     backgroundColor: '#ffffff',
@@ -116,11 +144,22 @@ const styles = StyleSheet.create({
     height: 100,
     marginBottom: 20,
   },
-  title: {
-    fontSize: 24,
+  profileHeader: {
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 4,
+    borderColor: '#2CA39A', // Border color for the circular frame
+    marginBottom: 10,
+  },
+  name: {
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#2CA39A',
-    marginBottom: 10,
   },
   info: {
     fontSize: 16,
@@ -130,10 +169,24 @@ const styles = StyleSheet.create({
   pointsContainer: {
     marginVertical: 20,
     alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#2CA39A', // Background color for points container
+    borderRadius: 10,
+    width: '100%',
+    elevation: 4, // Add shadow for Android
+    shadowColor: '#000', // Shadow color for iOS
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset for iOS
+    shadowOpacity: 0.3, // Shadow opacity for iOS
+    shadowRadius: 4, // Shadow radius for iOS
   },
   pointsText: {
-    fontSize: 16,
-    color: '#2CA39A',
+    fontSize: 18,
+    color: '#fff',
+  },
+  pointsValue: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: '#FFD700', // Gold color for points value
   },
 });
 

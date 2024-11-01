@@ -29,12 +29,14 @@ export default function OnboardingOne({ navigation }) {
                 source={require('../assets/pagination/zoo.jpg')}
                 style={styles.background}
                 resizeMode="cover"
-                imageStyle={styles.imageStyle}
             >
+                {/* Dimming overlay */}
+                <View style={styles.overlay} />
+
                 <View style={styles.content}>
-                    <Text style={styles.title}>Welcome!</Text>
+                    <Text style={styles.title}>Dumelang!</Text>
                     <Text style={styles.description}>
-                        To City Expo where X marks the spot
+                        Experience our cultural heritage and the history of Tshwane
                     </Text>
 
                     <View style={styles.pagination}>
@@ -57,7 +59,7 @@ export default function OnboardingOne({ navigation }) {
                         ))}
                     </View>
 
-                    <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('LoginOrSignup')}>
+                    <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('Index')}>
                         <Text style={styles.skipButtonText}>Skip</Text>
                     </TouchableOpacity>
                 </View>
@@ -73,14 +75,21 @@ const styles = StyleSheet.create({
     background: {
         flex: 1,
     },
-    imageStyle: {
-        opacity: 0.7,
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Adjust the rgba for different levels of dimming
+        zIndex: 1, // Make sure overlay is above the background image
     },
     content: {
         flex: 1,
         padding: 20,
         alignItems: 'center',
         justifyContent: 'center',
+        zIndex: 2, // Ensure content is above the overlay
     },
     title: {
         fontSize: 50,
